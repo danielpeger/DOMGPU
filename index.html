@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>DOMGPU Overlay Demo</title>
+  </head>
+  <body>
+    <main class="page">
+      <h1>DOMGPU Expressive Overlay</h1>
+      <p>
+        Cards below are regular DOM nodes. The visual effects are rendered by a
+        WebGPU overlay canvas.
+      </p>
+
+      <section class="grid">
+        <article class="card expressive" data-material="hover">
+          <h2>Hover Overlay</h2>
+          <p>Hover this card to increase the overlay color intensity.</p>
+        </article>
+
+        <article class="card expressive" data-material="ripple">
+          <h2>Ripple Distortion</h2>
+          <p>Move your cursor around this card to see ripple activity.</p>
+        </article>
+
+        <article class="card expressive" style="--expressive-material: ripple">
+          <h2>CSS Variable Opt-In</h2>
+          <p>This card is registered via <code>--expressive-material</code>.</p>
+        </article>
+
+        <article class="card">
+          <h2>Regular DOM Card</h2>
+          <p>This card is not in the GPU scene graph.</p>
+        </article>
+      </section>
+    </main>
+
+    <canvas id="expressive-layer" aria-hidden="true"></canvas>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
