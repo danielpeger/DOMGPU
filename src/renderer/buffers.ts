@@ -28,9 +28,7 @@ export class RendererBuffers {
   private instanceCapacity = 512;
 
   constructor(private readonly device: GPUDevice) {
-    const quadVertices = new Float32Array([
-      0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1,
-    ]);
+    const quadVertices = new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]);
 
     this.quadBuffer = device.createBuffer({
       size: quadVertices.byteLength,
@@ -81,7 +79,8 @@ export class RendererBuffers {
       data[base + 6] = node.color[1];
       data[base + 7] = node.color[2];
       data[base + 8] = node.color[3];
-      data[base + 9] = node.material === "ripple" ? 2 : node.material === "hover" ? 1 : 0;
+      data[base + 9] =
+        node.material === "ripple" ? 2 : node.material === "hover" ? 1 : 0;
       data[base + 10] = node.interaction.hover;
       data[base + 11] = node.interaction.focus;
       data[base + 12] = node.interaction.active;

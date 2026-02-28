@@ -38,7 +38,8 @@ export function extractStyle(el: HTMLElement): ExtractedStyle {
 
 function normalizeMaterial(value: string): MaterialType {
   if (value === "ripple") return "ripple";
-  if (value === "hover" || value === "glass" || value === "overlay") return "hover";
+  if (value === "hover" || value === "glass" || value === "overlay")
+    return "hover";
   return "none";
 }
 
@@ -58,7 +59,8 @@ function parseColor(input: string): [number, number, number, number] | null {
       .slice(4, -1)
       .split(",")
       .map((part) => Number.parseFloat(part.trim()));
-    if (parts.length !== 3 || parts.some((part) => !Number.isFinite(part))) return null;
+    if (parts.length !== 3 || parts.some((part) => !Number.isFinite(part)))
+      return null;
     return [parts[0] / 255, parts[1] / 255, parts[2] / 255, 1];
   }
 
@@ -67,7 +69,8 @@ function parseColor(input: string): [number, number, number, number] | null {
       .slice(5, -1)
       .split(",")
       .map((part) => Number.parseFloat(part.trim()));
-    if (parts.length !== 4 || parts.some((part) => !Number.isFinite(part))) return null;
+    if (parts.length !== 4 || parts.some((part) => !Number.isFinite(part)))
+      return null;
     return [parts[0] / 255, parts[1] / 255, parts[2] / 255, clamp01(parts[3])];
   }
 
