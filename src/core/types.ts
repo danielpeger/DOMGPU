@@ -1,4 +1,4 @@
-export type MaterialType = "hover" | "ripple" | "none";
+export type MaterialType = "hover" | "ripple" | "ripple-touch" | "none";
 
 export interface ElementInteractionState {
   hover: number;
@@ -29,4 +29,8 @@ export interface GlobalInteractionState {
   time: number;
   viewportWidth: number;
   viewportHeight: number;
+  tapX: number;
+  tapY: number;
+  tapTime: number;
+  tapActive: number;
 }

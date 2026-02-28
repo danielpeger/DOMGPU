@@ -1,6 +1,7 @@
 struct Globals {
   cursorAndVelocity: vec4f,
   scrollTimeViewport: vec4f,
+  tapData: vec4f,
 }
 
 @group(0) @binding(0) var<uniform> globals: Globals;

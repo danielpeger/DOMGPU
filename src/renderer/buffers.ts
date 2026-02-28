@@ -42,7 +42,7 @@ export class RendererBuffers {
     });
 
     this.globalsBuffer = device.createBuffer({
-      size: 32,
+      size: 48,
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
     });
 
@@ -80,7 +80,13 @@ export class RendererBuffers {
       data[base + 7] = node.color[2];
       data[base + 8] = node.color[3];
       data[base + 9] =
-        node.material === "ripple" ? 2 : node.material === "hover" ? 1 : 0;
+        node.material === "ripple-touch"
+          ? 3
+          : node.material === "ripple"
+            ? 2
+            : node.material === "hover"
+              ? 1
+              : 0;
       data[base + 10] = node.interaction.hover;
       data[base + 11] = node.interaction.focus;
       data[base + 12] = node.interaction.active;
@@ -99,6 +105,10 @@ export class RendererBuffers {
       state.time,
       state.viewportWidth,
       state.viewportHeight,
+      state.tapX,
+      state.tapY,
+      state.tapTime,
+      state.tapActive,
     ]);
     this.device.queue.writeBuffer(this.globalsBuffer, 0, globals);
   }

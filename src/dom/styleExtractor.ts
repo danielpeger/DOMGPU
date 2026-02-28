@@ -37,6 +37,7 @@ export function extractStyle(el: HTMLElement): ExtractedStyle {
 }
 
 function normalizeMaterial(value: string): MaterialType {
+  if (value === "ripple-touch" || value === "ripple_touch") return "ripple-touch";
   if (value === "ripple") return "ripple";
   if (value === "hover" || value === "glass" || value === "overlay")
     return "hover";

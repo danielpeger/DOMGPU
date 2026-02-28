@@ -1,6 +1,7 @@
 struct Globals {
   cursorAndVelocity: vec4f,
   scrollTimeViewport: vec4f,
+  tapData: vec4f,
 }
 
 @group(0) @binding(0) var<uniform> globals: Globals;
@@ -32,7 +33,24 @@ fn fsMain(input: FragmentIn) -> @location(0) vec4f {
     discard;
   }
 
-  // Ripple material
+  // Tap/click ripple pulse from the pointer-down position.
+  if (input.materialId >= 2.5) {
+    let tapPos = globals.tapData.xy;
+    let tapTime = globals.tapData.z;
+    let tapActive = globals.tapData.w;
+    let time = globals.scrollTimeViewport.y;
+    let elapsed = max(0.0, time - tapTime);
+    let radius = elapsed * 900.0;
+    let d = distance(input.screenPos, tapPos);
+    let ring = exp(-abs(d - radius) * 0.04);
+    let innerGlow = exp(-d * 0.02) * 0.35;
+    let timeFade = exp(-elapsed * 4.0);
+    let trigger = step(0.01, input.activeState) * tapActive;
+    let alpha = clamp((ring + innerGlow) * timeFade * trigger, 0.0, 1.0) * mask;
+    return vec4f(1.0, 1.0, 1.0, alpha);
+  }
+
+  // Cursor-driven ripple material.
   if (input.materialId >= 1.5) {
     let cursor = globals.cursorAndVelocity.xy;
     let time = globals.scrollTimeViewport.y;

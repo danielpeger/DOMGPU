@@ -20,6 +20,10 @@ export class InteractionTracker {
       time: 0,
       viewportWidth: viewport.width,
       viewportHeight: viewport.height,
+      tapX: 0,
+      tapY: 0,
+      tapTime: -1000,
+      tapActive: 0,
     };
   }
 
@@ -41,6 +45,8 @@ export class InteractionTracker {
 
   updateTime(nowMs: number): void {
     this.state.time = nowMs * 0.001;
+    // Fade the tap trigger so ripple-touch only runs briefly after input.
+    this.state.tapActive = damp(this.state.tapActive, 0, 0.08);
   }
 
   getState(): GlobalInteractionState {
@@ -75,7 +81,16 @@ export class InteractionTracker {
   };
 
   private onPointerDown = (event: PointerEvent): void => {
-    this.activeElement = event.target instanceof HTMLElement ? event.target : null;
+    if (!(event.target instanceof HTMLElement)) {
+      this.activeElement = null;
+      return;
+    }
+
+    this.activeElement = toExpressiveElement(event.target);
+    this.state.tapX = event.clientX + window.scrollX;
+    this.state.tapY = event.clientY + window.scrollY;
+    this.state.tapTime = performance.now() * 0.001;
+    this.state.tapActive = 1;
   };
 
   private onPointerUp = (): void => {
@@ -107,4 +122,10 @@ function getDocumentViewportSize(): { width: number; height: number } {
   const width = Math.max(window.innerWidth, root.clientWidth, root.scrollWidth);
   const height = Math.max(window.innerHeight, root.clientHeight, root.scrollHeight);
   return { width, height };
+}
+
+function toExpressiveElement(target: HTMLElement): HTMLElement | null {
+  return target.closest<HTMLElement>(
+    ".expressive, [data-material], [style*='--expressive-material']",
+  );
 }
