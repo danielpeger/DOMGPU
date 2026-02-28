@@ -10,6 +10,7 @@ export class InteractionTracker {
   private activeElement: HTMLElement | null = null;
 
   constructor() {
+    const viewport = getDocumentViewportSize();
     this.state = {
       cursorX: 0,
       cursorY: 0,
@@ -17,8 +18,8 @@ export class InteractionTracker {
       cursorVelY: 0,
       scrollVelocity: 0,
       time: 0,
-      viewportWidth: window.innerWidth,
-      viewportHeight: window.innerHeight,
+      viewportWidth: viewport.width,
+      viewportHeight: viewport.height,
     };
   }
 
@@ -60,15 +61,17 @@ export class InteractionTracker {
   private onPointerMove = (event: PointerEvent): void => {
     const now = performance.now();
     const dt = Math.max(1, now - this.lastPointerTime);
-    const dx = event.clientX - this.lastCursorX;
-    const dy = event.clientY - this.lastCursorY;
-    this.state.cursorX = event.clientX;
-    this.state.cursorY = event.clientY;
+    const cursorX = event.clientX + window.scrollX;
+    const cursorY = event.clientY + window.scrollY;
+    const dx = cursorX - this.lastCursorX;
+    const dy = cursorY - this.lastCursorY;
+    this.state.cursorX = cursorX;
+    this.state.cursorY = cursorY;
     this.state.cursorVelX = (dx / dt) * 1000;
     this.state.cursorVelY = (dy / dt) * 1000;
     this.lastPointerTime = now;
-    this.lastCursorX = event.clientX;
-    this.lastCursorY = event.clientY;
+    this.lastCursorX = cursorX;
+    this.lastCursorY = cursorY;
   };
 
   private onPointerDown = (event: PointerEvent): void => {
@@ -89,11 +92,19 @@ export class InteractionTracker {
   };
 
   private onResize = (): void => {
-    this.state.viewportWidth = window.innerWidth;
-    this.state.viewportHeight = window.innerHeight;
+    const viewport = getDocumentViewportSize();
+    this.state.viewportWidth = viewport.width;
+    this.state.viewportHeight = viewport.height;
   };
 }
 
 function damp(current: number, target: number, factor: number): number {
   return current + (target - current) * factor;
+}
+
+function getDocumentViewportSize(): { width: number; height: number } {
+  const root = document.documentElement;
+  const width = Math.max(window.innerWidth, root.clientWidth, root.scrollWidth);
+  const height = Math.max(window.innerHeight, root.clientHeight, root.scrollHeight);
+  return { width, height };
 }

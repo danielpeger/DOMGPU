@@ -52,6 +52,7 @@ async function bootstrap(): Promise<void> {
     if (sceneDirty || graph.consumeDirty()) {
       registry.scan(document);
       registry.removeDisconnected();
+      fitCanvas(canvas);
       currentNodes = syncSceneGraph(registry.getElements(), graph);
       instanceCount = buffers.uploadInstances(currentNodes);
       sceneDirty = false;
@@ -66,11 +67,19 @@ async function bootstrap(): Promise<void> {
 }
 
 function fitCanvas(canvas: HTMLCanvasElement): void {
+  const viewport = getDocumentViewportSize();
   const dpr = window.devicePixelRatio || 1;
-  canvas.width = Math.max(1, Math.floor(window.innerWidth * dpr));
-  canvas.height = Math.max(1, Math.floor(window.innerHeight * dpr));
-  canvas.style.width = `${window.innerWidth}px`;
-  canvas.style.height = `${window.innerHeight}px`;
+  canvas.width = Math.max(1, Math.floor(viewport.width * dpr));
+  canvas.height = Math.max(1, Math.floor(viewport.height * dpr));
+  canvas.style.width = `${viewport.width}px`;
+  canvas.style.height = `${viewport.height}px`;
+}
+
+function getDocumentViewportSize(): { width: number; height: number } {
+  const root = document.documentElement;
+  const width = Math.max(window.innerWidth, root.clientWidth, root.scrollWidth);
+  const height = Math.max(window.innerHeight, root.clientHeight, root.scrollHeight);
+  return { width, height };
 }
 
 bootstrap().catch((error: unknown) => {

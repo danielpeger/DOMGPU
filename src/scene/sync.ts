@@ -31,8 +31,8 @@ export function syncSceneGraph(
     const node: SceneNode = {
       id,
       element: el,
-      x: rect.left,
-      y: rect.top,
+      x: rect.left + window.scrollX,
+      y: rect.top + window.scrollY,
       width: rect.width,
       height: rect.height,
       borderRadius: styles.borderRadius,
